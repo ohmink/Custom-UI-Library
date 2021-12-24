@@ -3,6 +3,6 @@ import * as ReactDOM from "react-dom";
 import Comments from "./components/comments/comments";
 
 ReactDOM.render(
-  <Comments key="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" theme="" />,
+  <Comments key={process.env.AUTH_KEY} issueNumber={9} theme="" />,
   document.getElementById("app")
 );

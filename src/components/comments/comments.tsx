@@ -1,10 +1,13 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
-import CommentsItem from "./commentsItem";
+
 import { getComments } from "../../api/apiHandler";
+import CommentsItem from "./commentsItem";
+import CommentsWrite from "./commentsWrite";
 
 interface CommentsProps {
-  key: string;
+  key: string | undefined;
+  issueNumber: number;
   width?: string;
   theme?: string;
 }
@@ -33,17 +36,17 @@ const CommentsList = styled.ul`
   border-top: 1px solid #ddd;
 `;
 
-const Comments: FC<CommentsProps> = ({ key, width, theme }) => {
+const Comments: FC<CommentsProps> = ({ key, issueNumber, width, theme }) => {
   const [list, setList] = React.useState<any>([]);
 
   React.useEffect(() => {
-    const setData = async (key: string, issueNumber: number) => {
-      const data = await getComments(key, issueNumber);
+    const setData = async (issueNumber: number) => {
+      const data = await getComments(issueNumber);
       console.log(data);
       if (data) setList(data);
     };
 
-    setData(key, 9);
+    setData(issueNumber);
   }, []);
 
   return (
@@ -52,7 +55,9 @@ const Comments: FC<CommentsProps> = ({ key, width, theme }) => {
       <CommentsList>
         {list.map((comment: any, idx: number) => (
           <CommentsItem
-            key={`comment #${idx} by ${comment.user.login}`}
+            key={`comment#${idx}`}
+            authKey={key}
+            id={comment.id}
             name={comment.user.login}
             date={comment.created_at}
             avatarUrl={comment.user.avatar_url}
@@ -62,6 +67,7 @@ const Comments: FC<CommentsProps> = ({ key, width, theme }) => {
           />
         ))}
       </CommentsList>
+      <CommentsWrite />
     </CommentsLayout>
   );
 };

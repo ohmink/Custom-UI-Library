@@ -1,8 +1,11 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import { updateComment } from "../../api/apiHandler";
 
 interface CommentsItemProps {
+  authKey: string | undefined;
+  id: number;
   name: string;
   date: string;
   avatarUrl: string;
@@ -31,14 +34,6 @@ const commentsItemTopStyle = css({
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-});
-
-const commentsItemMiddleStyle = css({});
-
-const commentsItemBottomStyle = css({
-  display: "flex",
-  flexDirection: "row",
-  marginLeft: "0.75rem",
 });
 
 const H3 = styled.h3`
@@ -70,6 +65,16 @@ const CommentsItem: FC<CommentsItemProps> = (props) => {
     .toLocaleDateString()
     .replace(/.\s/g, "-")
     .replace(".", "");
+
+  async function commentEdit() {
+    const result = await updateComment(
+      props.authKey,
+      props.id,
+      "변경했습니다..."
+    );
+  }
+  function commentDelete() {}
+
   return (
     <li css={commentsItemStyle}>
       <div>
@@ -79,11 +84,15 @@ const CommentsItem: FC<CommentsItemProps> = (props) => {
         <div css={commentsItemTopStyle}>
           <H3>{props.name}</H3>
           <div>
-            <Button theme={props.theme}>Edit</Button>
-            <Button theme={props.theme}>Delete</Button>
+            <Button theme={props.theme} onClick={commentEdit}>
+              Edit
+            </Button>
+            <Button theme={props.theme} onClick={commentDelete}>
+              Delete
+            </Button>
           </div>
         </div>
-        <div css={commentsItemMiddleStyle}>
+        <div>
           <SmallText theme={props.theme}>{date}</SmallText>
         </div>
         <div>
